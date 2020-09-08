@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -12,11 +14,14 @@ import java.net.URL;
 
 public class BookListActivity extends AppCompatActivity {
 
+    private ProgressBar mProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list);
 
+        mProgressBar = (ProgressBar) findViewById(R.id.pb_loading);
         try {
             URL bookUrl = ApiUtil.buildUrl("cooking");
             new BooksQueryTask().execute(bookUrl);
@@ -42,7 +47,24 @@ public class BookListActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             TextView tvResult = (TextView)findViewById(R.id.tvResponse);
+            TextView tvError = (TextView) findViewById(R.id.textView_error);
+            mProgressBar.setVisibility(View.INVISIBLE);
+            if (result == null){
+              tvError.setVisibility(View.VISIBLE);
+              tvResult.setVisibility(View.INVISIBLE);
+            }
+            else {
+                tvError.setVisibility(View.INVISIBLE);
+                tvResult.setVisibility(View.VISIBLE);
+            }
+
             tvResult.setText(result);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressBar.setVisibility(View.VISIBLE );
         }
     }
 

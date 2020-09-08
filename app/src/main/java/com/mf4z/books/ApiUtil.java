@@ -14,16 +14,23 @@ import java.util.Scanner;
 
 public class ApiUtil {
 
+    private static final String QUERY_PARAMETER_KEY = "q";
+    private static final String KEY = "key";
+    private static final String API_KEY = "AIzaSyCanPtwEAyg2KlSOniD_rIUzdPiOvKPxRQ";
+
     private ApiUtil(){}
 
     public static final String BASE_API_URL =
             "https://www.googleapis.com/books/v1/volumes";
 
     public static URL buildUrl(String title){
-        String fullUrl = BASE_API_URL + "?q=" +title;
         URL url = null;
+        Uri uri = Uri.parse(BASE_API_URL).buildUpon().
+                appendQueryParameter(QUERY_PARAMETER_KEY,title)
+//                .appendQueryParameter(KEY,API_KEY)
+                .build();
         try {
-            url = new URL(fullUrl);
+                url = new URL(uri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -48,7 +55,7 @@ public class ApiUtil {
 
         }catch (Exception e){
 
-            Log.d("Error",e.toString());
+            Log.d("Error",e.toString()    );
             return null;
         }
         finally {
