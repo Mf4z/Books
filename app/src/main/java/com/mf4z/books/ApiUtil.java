@@ -20,7 +20,7 @@ public class ApiUtil {
 
     private static final String QUERY_PARAMETER_KEY = "q";
     private static final String KEY = "key";
-    private static final String API_KEY = "AIzaSyBIOBBHYeLkfi_dsUHdVnC82_tbcov_eAQ";
+    private static final String API_KEY = BuildConfig.ApiKey;
 
     private ApiUtil(){}
 
