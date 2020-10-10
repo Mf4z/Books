@@ -1,10 +1,12 @@
 package com.mf4z.books;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class BookListActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
+public class BookListActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private ProgressBar mProgressBar;
     private RecyclerView rvBooks;
@@ -32,7 +34,7 @@ public class BookListActivity extends AppCompatActivity implements SearchView.On
         mProgressBar = (ProgressBar) findViewById(R.id.pb_loading);
         rvBooks = (RecyclerView) findViewById(R.id.rv_books);
 
-        LinearLayoutManager booksLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager booksLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         rvBooks.setLayoutManager(booksLayoutManager);
 
@@ -41,13 +43,13 @@ public class BookListActivity extends AppCompatActivity implements SearchView.On
             new BooksQueryTask().execute(bookUrl);
 
         } catch (Exception e) {
-            Log.d("Error",e.getMessage());
+            Log.d("Error", e.getMessage());
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.book_list_menu,menu);
+        getMenuInflater().inflate(R.menu.book_list_menu, menu);
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(this);
@@ -61,9 +63,9 @@ public class BookListActivity extends AppCompatActivity implements SearchView.On
             URL bookUrl = ApiUtil.buildUrl(query);
             new BooksQueryTask().execute(bookUrl);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
-            Log.d("error",e.getMessage());
+            Log.d("error", e.getMessage());
         }
         return false;
     }
@@ -74,7 +76,7 @@ public class BookListActivity extends AppCompatActivity implements SearchView.On
     }
 
 
-    public class BooksQueryTask extends AsyncTask<URL,Void,String>{
+    public class BooksQueryTask extends AsyncTask<URL, Void, String> {
         @Override
         protected String doInBackground(URL... urls) {
             URL searchURL = urls[0];
@@ -82,7 +84,7 @@ public class BookListActivity extends AppCompatActivity implements SearchView.On
             try {
                 result = ApiUtil.getJSON(searchURL);
             } catch (IOException e) {
-                Log.d("Error",e.getMessage());
+                Log.d("Error", e.getMessage());
             }
             return result;
         }
@@ -91,13 +93,12 @@ public class BookListActivity extends AppCompatActivity implements SearchView.On
         protected void onPostExecute(String result) {
             TextView tvError = (TextView) findViewById(R.id.textView_error);
             mProgressBar.setVisibility(View.INVISIBLE);
-            if (result == null){
-              tvError.setVisibility(View.VISIBLE);
-              rvBooks.setVisibility(View.INVISIBLE);
-            }
-            else {
+            if (result == null) {
+                tvError.setVisibility(View.VISIBLE);
+                rvBooks.setVisibility(View.INVISIBLE);
+            } else {
                 tvError.setVisibility(View.INVISIBLE);
-                rvBooks .setVisibility(View.VISIBLE);
+                rvBooks.setVisibility(View.VISIBLE);
             }
 
             ArrayList<Book> books = ApiUtil.getBooksFromJson(result);
@@ -111,9 +112,22 @@ public class BookListActivity extends AppCompatActivity implements SearchView.On
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mProgressBar.setVisibility(View.VISIBLE );
+            mProgressBar.setVisibility(View.VISIBLE);
         }
     }
 
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_advanced_search:
+                Intent intent = new Intent(this,SearchActivity.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
 }
