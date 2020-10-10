@@ -1,6 +1,7 @@
 package com.mf4z.books;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHold
         return books.size();
     }
 
-    public class BookViewHolder extends RecyclerView.ViewHolder{
+    public class BookViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView tvTitle;
         TextView tvAuthors;
@@ -54,6 +55,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHold
             tvAuthors = (TextView) itemView.findViewById(R.id.tvAuthors);
             tvDate = (TextView) itemView.findViewById(R.id.tvPublishedDate);
             tvPubliser = (TextView) itemView.findViewById(R.id.tvPublisher);
+            itemView.setOnClickListener(this);
         }
 
 
@@ -71,6 +73,17 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHold
             tvDate.setText(book.publishedDate);
             tvPubliser.setText(book.publisher);
 
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            int position = getAdapterPosition();
+            Book selectedBook = books.get(position);
+            Intent intent = new Intent(v.getContext(),BookDetail.class);
+            //Send Book details to BookDetail activity
+            intent.putExtra("Book",selectedBook);
+            v.getContext().startActivity(intent);
         }
     }
 
