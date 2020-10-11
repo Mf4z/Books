@@ -7,5 +7,6 @@
     <string name="hint_publisher">Insert Publisher</string>
     <string name="hint_isbn">Insert ISBN</string>
     <string name="advanced_search">Advanced Search</string>
+    <string name="no_search_data">Please insert valid search terms</string>
 
 </resources>

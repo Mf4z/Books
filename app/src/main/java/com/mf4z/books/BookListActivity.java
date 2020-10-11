@@ -38,8 +38,16 @@ public class BookListActivity extends AppCompatActivity implements SearchView.On
 
         rvBooks.setLayoutManager(booksLayoutManager);
 
+        Intent intent = getIntent();
+        String query = intent.getStringExtra("Query");
+        URL bookUrl;
+
         try {
-            URL bookUrl = ApiUtil.buildUrl("cooking");
+            if (query == null || query.isEmpty()) {
+                bookUrl = ApiUtil.buildUrl("cooking");
+            } else {
+                bookUrl = new URL(query);
+            }
             new BooksQueryTask().execute(bookUrl);
 
         } catch (Exception e) {
@@ -99,14 +107,13 @@ public class BookListActivity extends AppCompatActivity implements SearchView.On
             } else {
                 tvError.setVisibility(View.INVISIBLE);
                 rvBooks.setVisibility(View.VISIBLE);
+
+                ArrayList<Book> books = ApiUtil.getBooksFromJson(result);
+                //tvResult.setText(resultString);
+                BooksAdapter adapter = new BooksAdapter(books);
+                rvBooks.setAdapter(adapter);
             }
 
-            ArrayList<Book> books = ApiUtil.getBooksFromJson(result);
-
-
-            //tvResult.setText(resultString);
-            BooksAdapter adapter = new BooksAdapter(books);
-            rvBooks.setAdapter(adapter);
         }
 
         @Override
@@ -121,7 +128,7 @@ public class BookListActivity extends AppCompatActivity implements SearchView.On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_advanced_search:
-                Intent intent = new Intent(this,SearchActivity.class);
+                Intent intent = new Intent(this, SearchActivity.class);
                 startActivity(intent);
                 return true;
 
